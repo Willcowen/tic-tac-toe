@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import Square from "./components/square";
 import Board from "./components/board";
 import winningCombinations from "./components/winning-combinations";
 
@@ -26,7 +25,7 @@ const App = () => {
     setBoard(boardCopy);
     if (turn === "X" && gameMode === "solo") {
       setTurn("O");
-    } else if (gameMode === "vs computer" && setIsGameWon(false)) {
+    } else if (gameMode === "vs computer" && isGameWon===false) {
       if (computerTurn === false) {
         setComputerTurn(true);
       } else setComputerTurn(false);
@@ -41,8 +40,10 @@ const App = () => {
   }, [board]);
 
   useEffect(() => {
-    if(computerTurn === true) {
-    computer();
+    if(computerTurn!==null) {
+      setTimeout(()=>{
+        computer();
+       }, 1500)
     }
   }, [computerTurn]);
 
@@ -116,7 +117,7 @@ const App = () => {
     setGameMode(null);
     setTurn("X");
     setIsGameWon(false);
-    setComputerTurn(false)
+    setComputerTurn(null)
   };
 
   console.log(board);
