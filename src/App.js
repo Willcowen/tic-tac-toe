@@ -5,15 +5,17 @@ import winningCombinations from "./components/winning-combinations";
 
 const App = () => {
   console.log("rendering app...");
-  const emptyboard = ["", "", "", "", "", "", "", "", ""];
-  const [board, setBoard] = useState(emptyboard);
+  const initialBoard = ["", "", "", "", "", "", "", "", ""];
+  const [board, setBoard] = useState(initialBoard);
   const [turn, setTurn] = useState("X");
   const [winner, setWinner] = useState("");
   const [maxTurns, setMaxTurns] = useState(0);
   const [gameMode, setGameMode] = useState(null);
   const [computerTurn, setComputerTurn] = useState(null);
-  const [isGameWon, setIsGameWon] = useState(false)
+  const [isGameWon, setIsGameWon] = useState(false);
 
+  const computer = 'computer'
+  const solo = 'solo'
   const chooseSquare = (squareNumber) => {
     setMaxTurns(maxTurns + 1);
     const boardCopy = board.map((value, index) => {
@@ -23,9 +25,9 @@ const App = () => {
       return value;
     });
     setBoard(boardCopy);
-    if (turn === "X" && gameMode === "solo") {
+    if (turn === "X" && gameMode === solo) {
       setTurn("O");
-    } else if (gameMode === "vs computer" && isGameWon===false) {
+    } else if (gameMode === computer && isGameWon === false) {
       if (computerTurn === false) {
         setComputerTurn(true);
       } else setComputerTurn(false);
@@ -40,70 +42,48 @@ const App = () => {
   }, [board]);
 
   useEffect(() => {
-    if(computerTurn!==null) {
-      setTimeout(()=>{
-        computer();
-       }, 1500)
+    if (computerTurn !== null && isGameWon === false) {
+      setTimeout(() => {
+        takeComputerTurn();
+      }, 1500);
     }
   }, [computerTurn]);
 
-  const computer = () => {
+  const takeComputerTurn = () => {
     function getRandomInt(max) {
       return Math.floor(Math.random() * max);
     }
-    const newArray = board.map(function (element, index) {
-      if (element === "") {
-        return index;
-      } else {
-        return -1;
-      }
-    });
-
-    console.log(newArray);
-
-    const filteredArray = newArray.filter((element) => element >= 0);
-
+    const availablePositions = board.map( (element, index) => element === "" ? index : -1 ).filter( element => element >= 0)
+    const filteredArray = availablePositions.filter((element) => element >= 0);
     let randomNumber = getRandomInt(filteredArray.length - 1);
-
     const cpuMoveIndex = filteredArray[randomNumber];
     const boardCopy = [...board];
     boardCopy[cpuMoveIndex] = "O";
-
     setBoard(boardCopy);
   };
 
   const checkWinnerX = () => {
-    for (let i = 0; i < winningCombinations.winningX.length; i++) {
-      let count = 0;
-      const space = winningCombinations.winningX[i];
-      for (let j = 0; j < space.length; j++) {
-        if (space[j] === "") {
-          continue;
-        }
-        if (space[j] === board[j]) {
-          count++;
-          if (count === 3) {
-            setWinner("X");
-            setIsGameWon(true)
-          }
-        }
-      }
-    }
+    checkWinner("X");
   };
 
   const checkWinnerO = () => {
-    for (let i = 0; i < winningCombinations.winningO.length; i++) {
+    checkWinner("O");
+  };
+
+  const checkWinner = (player) => {
+    for (let i = 0; i < winningCombinations.winning.length; i++) {
       let count = 0;
-      const space = winningCombinations.winningO[i];
+      const space = winningCombinations.winning[i];
       for (let j = 0; j < space.length; j++) {
         if (space[j] === "") {
           continue;
         }
-        if (space[j] === board[j]) {
+        if (board[j] === player) {
           count++;
           if (count === 3) {
-            setWinner("O");
-            setIsGameWon(true)
+            setWinner(player);
+            setIsGameWon(true);
+            return;
           }
         }
       }
@@ -111,16 +91,14 @@ const App = () => {
   };
 
   const reset = () => {
-    setBoard(emptyboard);
+    setBoard(initialBoard);
     setMaxTurns(0);
     setWinner("");
     setGameMode(null);
     setTurn("X");
     setIsGameWon(false);
-    setComputerTurn(null)
+    setComputerTurn(null);
   };
-
-  console.log(board);
 
   return (
     <div className="App">
@@ -128,16 +106,16 @@ const App = () => {
       {gameMode === null && <h1 className="title">CHOOSE GAME MODE</h1>}
       {gameMode === null && (
         <div className="mode-select">
-          <h3 className="button" onClick={() => setGameMode("solo")}>
+          <h3 className="button" onClick={() => setGameMode(solo)}>
             SOLO
           </h3>
-          <h3 className="button" onClick={() => setGameMode("vs computer")}>
+          <h3 className="button" onClick={() => setGameMode("computer")}>
             VS. COMPUTER
           </h3>
         </div>
       )}
-      {gameMode === "solo" && <h2>(PLAYING: SOLO)</h2>}
-      {gameMode === "vs computer" && <h2>(PLAYING VS. COMPUTER)</h2>}
+      {gameMode === solo && <h2>(PLAYING: SOLO)</h2>}
+      {gameMode === computer && <h2>(PLAYING VS. COMPUTER)</h2>}
       {gameMode !== null && !winner && (
         <h3 className="player-select">Current player is: {turn}</h3>
       )}
