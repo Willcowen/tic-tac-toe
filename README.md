@@ -1,5 +1,7 @@
 **MY SIMPLE IMPLEMENTATION TIC-TAC-TOE WITHIN REACT**
 
+------------------------
+
 **USER INTERACTIONS**
 
 - **Choose Game Mode**
@@ -15,3 +17,4 @@
 - **Win checker (3 in a row, diagonally, horizontally or vertically)**
 
 - **Game Reset/Restart**
+------------------------
