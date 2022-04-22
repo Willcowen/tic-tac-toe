@@ -1,4 +1,6 @@
-***MY SIMPLE IMPLEMENTATION TIC-TAC-TOE WITHIN REACT***
+**MY SIMPLE IMPLEMENTATION OF TIC-TAC-TOE WITHIN REACT**
+
+------------------------
 
 **USER INTERACTIONS**
 
@@ -15,3 +17,4 @@
 - **Win checker (3 in a row, diagonally, horizontally or vertically)**
 
 - **Game Reset/Restart**
+------------------------
